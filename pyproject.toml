@@ -24,10 +24,13 @@ build   = ["pyinstaller>=6.0"]
 openai  = ["langchain-openai>=0.2.0"]
 google  = ["langchain-google-genai>=2.0.0"]
 all-providers = ["langchain-openai>=0.2.0", "langchain-google-genai>=2.0.0"]
-dev     = ["pytest>=8.0", "respx>=0.21"]
+dev     = ["pytest>=8.0", "pytest-asyncio>=0.24", "respx>=0.21"]
 
 [project.scripts]
 opsagent = "cli:main"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
 
 [tool.hatch.build.targets.wheel]
 packages = ["."]
