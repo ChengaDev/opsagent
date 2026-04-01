@@ -24,7 +24,7 @@ jobs:
           cache: pip
 
       - name: Install dependencies
-        run: pip install -e ".[all-providers]"
+        run: pip install -e ".[all-providers,dev]"
 
       - name: Run tests
         run: pytest tests/ -v --tb=short
