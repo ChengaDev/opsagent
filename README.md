@@ -1,16 +1,16 @@
-# OpsAgent-MCP
+# OpsAgent
 
-**AI-powered CI/CD failure first responder.** Drops into a failing GitHub Actions workflow, reads build logs and git history directly from the runner, and produces a structured Root Cause Analysis — no external log aggregator, no sidecar, no setup.
+**AI-powered CI failure first responder.** Drops into a failing GitHub Actions workflow, reads build logs and git history directly from the runner, and produces a structured Root Cause Analysis — no external log aggregator, no sidecar, no setup.
 
 ```
-  OpsAgent-MCP  |  CI/CD First Responder  |  LangGraph + MCP + Claude
+  OpsAgent  |  CI First Responder  |  LangGraph + MCP + Claude
 ```
 
 ---
 
 ## How it works
 
-OpsAgent runs as the **last step** of any failing workflow (`if: failure()`). Because it executes inside the runner it has direct, local access to everything it needs:
+OpsAgent runs as the **last step** of any failing CI workflow (`if: failure()`). Because it executes inside the runner it has direct, local access to everything it needs:
 
 - Build / deployment logs on disk
 - The full git workspace, recent commits, and diffs
@@ -44,9 +44,13 @@ GitHub Actions failure  (CI or CD)
    Claude (Anthropic)                 └── file (--output)
 ```
 
-### Works for both CI and CD
+### Works across all CI failure types
 
-OpsAgent treats every GitHub Actions log the same regardless of what the workflow does. Whether the failure is a broken build, a failing test suite, a Helm upgrade that timed out, or a Terraform apply that hit an IAM error — if it produces a log file, OpsAgent can analyse it.
+OpsAgent treats every CI log the same regardless of what the workflow does. Whether the failure is a broken build, a failing test suite, a missing dependency, or a Docker build error — if it produces a log file, OpsAgent can analyse it.
+
+### Also supports CD failures
+
+OpsAgent also handles deployment failures — Helm upgrades, Terraform applies, Kubernetes errors, and more. Point it at any log file and it will produce a structured RCA.
 
 | Failure domain | Example errors detected |
 |---|---|

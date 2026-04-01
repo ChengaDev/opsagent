@@ -1,5 +1,5 @@
 name: OpsAgent RCA
-description: AI-powered CI/CD failure first responder. Analyses build logs and git history to produce a structured Root Cause Analysis.
+description: AI-powered CI failure first responder. Analyses build logs and git history to produce a structured Root Cause Analysis.
 author: ChengaDev
 
 branding:
