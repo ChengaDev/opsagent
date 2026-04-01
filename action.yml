@@ -47,6 +47,35 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Validate configuration
+      shell: bash
+      run: |
+        provider="${{ inputs.provider }}"
+        api_key="${{ inputs.api-key }}"
+
+        if [[ -n "$api_key" ]]; then
+          exit 0
+        fi
+
+        missing=""
+        if [[ "$provider" == "anthropic" && -z "$ANTHROPIC_API_KEY" ]]; then
+          missing="ANTHROPIC_API_KEY"
+        elif [[ "$provider" == "openai" && -z "$OPENAI_API_KEY" ]]; then
+          missing="OPENAI_API_KEY"
+        elif [[ "$provider" == "google" && -z "$GOOGLE_API_KEY" ]]; then
+          missing="GOOGLE_API_KEY"
+        fi
+
+        if [[ -n "$missing" ]]; then
+          echo "::error::OpsAgent: $missing is not set. Add it as a repository secret and pass it via the env block."
+          echo "## OpsAgent — Configuration Error" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Missing secret:** \`$missing\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Add it under **Settings → Secrets and variables → Actions → New repository secret**." >> $GITHUB_STEP_SUMMARY
+          exit 1
+        fi
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:

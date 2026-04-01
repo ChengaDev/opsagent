@@ -184,6 +184,13 @@ def main(
             if verbose:
                 click.echo(f"[OpsAgent] RCA written to: {output}")
 
+        step_summary = os.environ.get("GITHUB_STEP_SUMMARY")
+        if step_summary and rca:
+            with open(step_summary, "a", encoding="utf-8") as fh:
+                fh.write(f"\n## OpsAgent — Root Cause Analysis\n\n{rca}\n")
+            if verbose:
+                click.echo("[OpsAgent] RCA written to GitHub Step Summary.")
+
     except KeyboardInterrupt:
         click.echo("\n[OpsAgent] Interrupted by user.", err=True)
         sys.exit(130)
