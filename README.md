@@ -593,14 +593,21 @@ Environment variables: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GOOGLE_API_KEY`, 
 
 ## Contributing
 
-Contributions are welcome. Some good first areas:
+Contributions are welcome. Please open an issue first for anything beyond a small bug fix so we can align on direction before you invest time in a PR.
+
+### Requirements for every PR
+
+- **Tests are mandatory.** Every change to behaviour must include tests. PRs without tests covering the new or changed code will not be merged.
+- All existing tests must continue to pass (`pytest tests/ -v`).
+- Keep new dependencies minimal — ask in an issue if you're unsure.
+
+### Good first areas
 
 - **New MCP servers** — Jira, PagerDuty, Datadog log fetcher, `kubectl` live pod state
 - **New log patterns** — add to `_PATTERNS` in `log_analyzer.py` with a matching fixture and test
-- **GitHub Actions step summary** — write the RCA to `$GITHUB_STEP_SUMMARY`
 - **Streaming output** — stream Claude's reasoning in real time
 
-To add a new issue pattern:
+### Adding a new log pattern
 
 1. Add a `(regex, IssueKind, group_index)` entry to `_PATTERNS` in `mcp_tools/log_analyzer.py`
 2. Add a realistic fixture log to `tests/fixtures/`
