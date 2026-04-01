@@ -1,6 +1,6 @@
 # Contributing to OpsAgent
 
-Contributions are welcome. Please open an issue first for anything beyond a small bug fix so we can align on direction before you invest time in a PR.
+Contributions are very welcome — OpsAgent is a young project and there is a lot of room to grow. Please open an issue first for anything beyond a small bug fix so we can align on direction before you invest time in a PR.
 
 ## Requirements for every PR
 
@@ -18,11 +18,51 @@ pip install -e ".[all-providers]"
 pytest tests/ -v
 ```
 
-## Good first areas
+---
 
-- **New MCP servers** — Jira, PagerDuty, Datadog log fetcher, `kubectl` live pod state
-- **New log patterns** — add to `_PATTERNS` in `mcp_tools/log_analyzer.py` with a matching fixture and test
-- **Streaming output** — stream Claude's reasoning in real time
+## Most wanted contributions
+
+### 🔔 New notification channels
+
+This is the highest-impact area right now. OpsAgent currently supports Slack, generic webhooks, and GitHub PR comments. We'd love to add:
+
+| Channel | Notes |
+|---|---|
+| **PagerDuty** | Create an incident via the Events API v2 |
+| **Microsoft Teams** | Adaptive Card payload via Incoming Webhook |
+| **Discord** | Embed payload via Discord webhook |
+| **Opsgenie** | Create alert via Opsgenie REST API |
+| **Datadog** | Post event to Datadog Events API |
+| **Email** | SMTP or SendGrid for direct email delivery |
+| **Telegram** | Bot API message to a chat or channel |
+
+Each channel lives in `mcp_tools/notification_server.py` as a new MCP tool. Follow the pattern of `send_slack_notification` — accept a webhook URL or token via env var, build the payload, send it, return a success/error string.
+
+### 🔍 New log patterns
+
+Add to `_PATTERNS` in `mcp_tools/log_analyzer.py` with a matching fixture log and test. Common gaps:
+
+- Ruby / Bundler errors
+- Gradle / Maven build failures
+- Go module errors
+- Rust / Cargo compilation errors
+
+### 🛠️ New MCP servers
+
+- **Jira** — create or update a ticket from the RCA
+- **Datadog** — fetch recent logs or metrics for a service
+- **`kubectl`** — live pod state, describe, events
+
+---
+
+## Adding a new notification channel
+
+1. Add a new `@mcp.tool()` function in `mcp_tools/notification_server.py`
+2. Accept the target URL / token as a parameter (callers pass it from env)
+3. Build the channel-specific payload and POST it with `httpx`
+4. Return a plain string: `"✓ Sent"` or `"✗ Error: <message>"`
+5. Add a test in `tests/test_notification_server.py` using `respx` to mock the HTTP call
+6. Document the new env var in the README CLI reference table
 
 ## Adding a new log pattern
 

@@ -6,7 +6,7 @@
 [![Release](https://github.com/ChengaDev/opsagent/actions/workflows/release.yml/badge.svg)](https://github.com/ChengaDev/opsagent/actions/workflows/release.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[Why OpsAgent?](WHY_OPSAGENT.md) · [Examples](EXAMPLES.md) · [Running locally](RUNNING_LOCALLY.md) · [Contributing](CONTRIBUTING.md)
+[Why OpsAgent?](docs/why-opsagent.md) · [Examples](docs/examples.md) · [Running locally](docs/running-locally.md) · [Contributing](CONTRIBUTING.md)
 
 ---
 
@@ -118,7 +118,7 @@ pip install -e .
     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
 
-See [EXAMPLES.md](EXAMPLES.md) for Python, Node.js, Helm, Terraform, GitLab CI, Jenkins, and more.
+See [docs/examples.md](docs/examples.md) for Python, Node.js, Helm, Terraform, GitLab CI, Jenkins, and more.
 
 ---
 
