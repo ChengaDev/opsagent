@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-build   = ["pyinstaller>=6.0"]
+build   = ["pyinstaller>=6.0", "typer>=0.9"]
 openai  = ["langchain-openai>=0.2.0"]
 google  = ["langchain-google-genai>=2.0.0"]
 all-providers = ["langchain-openai>=0.2.0", "langchain-google-genai>=2.0.0"]
