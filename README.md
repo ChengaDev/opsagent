@@ -6,7 +6,7 @@
 [![Release](https://github.com/ChengaDev/opsagent/actions/workflows/release.yml/badge.svg)](https://github.com/ChengaDev/opsagent/actions/workflows/release.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[Why OpsAgent?](docs/why-opsagent.md) · [Examples](docs/examples.md) · [Running locally](docs/running-locally.md) · [Contributing](CONTRIBUTING.md)
+[Why OpsAgent?](docs/why-opsagent.md) · [Examples](docs/examples.md) · [Running locally](docs/running-locally.md) · [Contributing](docs/CONTRIBUTING.md)
 
 ---
 
