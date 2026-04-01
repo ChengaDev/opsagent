@@ -1,3 +1,6 @@
+# Internal scaffolding
+INITIAL_PROMPT.MD
+
 # Python
 __pycache__/
 *.py[cod]
