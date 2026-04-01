@@ -96,7 +96,7 @@ runs:
         [[ -n "${{ inputs.api-key }}"           ]] && args+=(--api-key            "${{ inputs.api-key }}")
         [[ -n "${{ inputs.model }}"             ]] && args+=(--model              "${{ inputs.model }}")
         [[ -n "${{ inputs.investigate-model }}" ]] && args+=(--investigate-model  "${{ inputs.investigate-model }}")
-        [[ -n "${{ inputs.slack-webhook }}"     ]] && args+=(--slack-webhook      "${{ inputs.slack-webhook }}")
+        [[ -n "${{ inputs.slack-webhook }}"     ]] && args+=(--slack-url           "${{ inputs.slack-webhook }}")
         [[ -n "${{ inputs.webhook-url }}"       ]] && args+=(--webhook-url        "${{ inputs.webhook-url }}")
         [[ -n "${{ inputs.github-token }}"      ]] && args+=(--github-token       "${{ inputs.github-token }}")
         [[ -n "${{ inputs.output }}"            ]] && args+=(--output             "${{ inputs.output }}")
