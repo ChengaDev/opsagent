@@ -1,0 +1,9 @@
+##[group]Run python -m py_compile app/main.py
+  python -m py_compile app/main.py
+  shell: /usr/bin/bash -e {0}
+##[endgroup]
+  File "/home/runner/work/my-service/my-service/app/main.py", line 47
+    def create_user(name: str, email: str)
+                                          ^
+SyntaxError: expected ':'
+##[error]Process completed with exit code 1.

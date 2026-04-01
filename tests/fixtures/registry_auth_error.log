@@ -1,0 +1,10 @@
+##[group]Run docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+  docker push ghcr.io/acme/api-service:abc1234
+  shell: /usr/bin/bash -e {0}
+##[endgroup]
+The push refers to repository [ghcr.io/acme/api-service]
+abc123def456: Preparing
+789ghi012jkl: Preparing
+abc123def456: Waiting
+unauthorized: authentication required
+##[error]Process completed with exit code 1.

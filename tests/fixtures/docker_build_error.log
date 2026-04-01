@@ -1,0 +1,28 @@
+##[group]Run docker build -t my-service:${{ github.sha }} .
+  docker build -t my-service:abc1234 .
+  shell: /usr/bin/bash -e {0}
+##[endgroup]
+#1 [internal] load build definition from Dockerfile
+#1 sha256:abc123...
+#1 DONE 0.1s
+
+#2 [internal] load .dockerignore
+#2 sha256:def456...
+#2 DONE 0.0s
+
+#3 [1/5] FROM python:3.11-slim
+#3 sha256:ghi789...
+#3 DONE 0.0s
+
+#4 [2/5] WORKDIR /app
+#4 DONE 0.1s
+
+#5 [3/5] COPY requirements.txt .
+#5 DONE 0.1s
+
+#6 [4/5] RUN pip install -r requirements.txt
+#6 0.312 Collecting uvicorn[standard]
+#6 45.221 ERROR: failed to build: failed to solve: process "/bin/sh -c pip install -r requirements.txt" did not complete successfully: exit code 1
+------
+ERROR: failed to build: failed to solve: process "/bin/sh -c pip install -r requirements.txt" did not complete successfully: exit code 1
+##[error]Process completed with exit code 1.

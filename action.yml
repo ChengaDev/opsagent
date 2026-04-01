@@ -1,0 +1,75 @@
+name: OpsAgent RCA
+description: AI-powered CI/CD failure first responder. Analyses build logs and git history to produce a structured Root Cause Analysis.
+author: ChengaDev
+
+branding:
+  icon: search
+  color: red
+
+inputs:
+  log-path:
+    description: Path to the CI/CD build log file
+    required: true
+  workspace:
+    description: Path to the git workspace root
+    required: false
+    default: ${{ github.workspace }}
+  provider:
+    description: LLM provider — anthropic (default), openai, google
+    required: false
+    default: anthropic
+  api-key:
+    description: API key for the chosen provider. Falls back to ANTHROPIC_API_KEY / OPENAI_API_KEY / GOOGLE_API_KEY env var.
+    required: false
+  model:
+    description: Model for RCA synthesis. Defaults to the provider's recommended model.
+    required: false
+  investigate-model:
+    description: Model for the investigation tool-call loop. Defaults to the provider's fast model.
+    required: false
+  slack-webhook:
+    description: Slack Incoming Webhook URL for posting the RCA summary.
+    required: false
+  webhook-url:
+    description: Generic HTTPS webhook URL (Discord, Teams, PagerDuty, custom).
+    required: false
+  github-token:
+    description: GitHub token for posting the RCA as a PR comment.
+    required: false
+  output:
+    description: File path to write the RCA report to (in addition to stdout).
+    required: false
+  quiet:
+    description: Suppress progress messages.
+    required: false
+    default: 'false'
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install OpsAgent
+      shell: bash
+      run: pip install "${{ github.action_path }}[all-providers]" --quiet
+
+    - name: Run OpsAgent
+      shell: bash
+      run: |
+        args=(
+          --log-path "${{ inputs.log-path }}"
+          --workspace "${{ inputs.workspace }}"
+          --provider "${{ inputs.provider }}"
+        )
+        [[ -n "${{ inputs.api-key }}"           ]] && args+=(--api-key            "${{ inputs.api-key }}")
+        [[ -n "${{ inputs.model }}"             ]] && args+=(--model              "${{ inputs.model }}")
+        [[ -n "${{ inputs.investigate-model }}" ]] && args+=(--investigate-model  "${{ inputs.investigate-model }}")
+        [[ -n "${{ inputs.slack-webhook }}"     ]] && args+=(--slack-webhook      "${{ inputs.slack-webhook }}")
+        [[ -n "${{ inputs.webhook-url }}"       ]] && args+=(--webhook-url        "${{ inputs.webhook-url }}")
+        [[ -n "${{ inputs.github-token }}"      ]] && args+=(--github-token       "${{ inputs.github-token }}")
+        [[ -n "${{ inputs.output }}"            ]] && args+=(--output             "${{ inputs.output }}")
+        [[ "${{ inputs.quiet }}" == "true"      ]] && args+=(--quiet)
+        opsagent "${args[@]}"

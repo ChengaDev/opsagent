@@ -1,0 +1,24 @@
+##[group]Run pytest tests/test_integration.py --timeout=60
+  pytest tests/test_integration.py -v --timeout=60
+  shell: /usr/bin/bash -e {0}
+##[endgroup]
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-7.4.0
+rootdir: /home/runner/work/my-service
+collected 3 items
+
+tests/test_integration.py::test_db_connection PASSED                    [ 33%]
+tests/test_integration.py::test_cache_warmup PASSED                     [ 66%]
+tests/test_integration.py::test_external_api_sync FAILED                [100%]
+
+=================================== FAILURES ===================================
+_____________ test_external_api_sync _____________
+
+tests/test_integration.py:72: in test_external_api_sync
+    response = requests.get("https://api.partner.example.com/sync", timeout=60)
+requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='api.partner.example.com', port=443): Max retries exceeded with url: /sync (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f1234567890>, 'Connection to api.partner.example.com timed out. (connect timeout=60)'))
+
+=========================== short test summary info ============================
+FAILED tests/test_integration.py::test_external_api_sync - requests.exceptions.ConnectTimeout: connection timed out
+========================= 1 failed, 2 passed in 62.45s =========================
+##[error]Process completed with exit code 1.

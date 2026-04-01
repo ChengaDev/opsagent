@@ -1,0 +1,8 @@
+##[group]Run pip install -r requirements.txt
+  pip install -r requirements.txt
+  shell: /usr/bin/bash -e {0}
+##[endgroup]
+Collecting fastapi==0.100.99 (from -r requirements.txt (line 1))
+  Downloading fastapi-0.100.99.tar.gz ... ERROR: Could not find a version that satisfies the requirement fastapi==0.100.99 (from versions: 0.95.0, 0.95.1, 0.95.2, 0.96.0, 0.96.1, 0.97.0, 0.98.0, 0.99.0, 0.99.1, 0.100.0, 0.100.1, 0.101.0, 0.103.0)
+ERROR: No matching distribution found for fastapi==0.100.99
+##[error]Process completed with exit code 1.

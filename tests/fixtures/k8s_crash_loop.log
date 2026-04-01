@@ -1,0 +1,29 @@
+##[group]Run kubectl rollout status deployment/api-service -n production
+  kubectl rollout status deployment/api-service -n production --timeout=300s
+  shell: /usr/bin/bash -e {0}
+##[endgroup]
+Waiting for deployment "api-service" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "api-service" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "api-service" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "api-service" rollout to finish: 1 old replicas are pending termination...
+error: deployment "api-service" exceeded its progress deadline
+##[error]Process completed with exit code 1.
+
+##[group]Run kubectl describe pod -l app=api-service -n production
+  kubectl describe pod -l app=api-service -n production
+  shell: /usr/bin/bash -e {0}
+##[endgroup]
+Name:         api-service-7d9f8b6c4-xk2pq
+Namespace:    production
+Status:       Running
+Containers:
+  api-service:
+    State:       Waiting
+      Reason:    CrashLoopBackOff
+    Last State:  Terminated
+      Reason:    Error
+      Exit Code: 1
+    Ready:       False
+    Restart Count: 5
+Events:
+  Warning  BackOff   2m    kubelet  Back-off restarting failed container

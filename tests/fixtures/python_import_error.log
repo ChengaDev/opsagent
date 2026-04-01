@@ -1,0 +1,24 @@
+##[group]Run pytest tests/
+  pytest tests/ -v --tb=short
+  shell: /usr/bin/bash -e {0}
+##[endgroup]
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-7.4.0, pluggy-1.2.0
+rootdir: /home/runner/work/my-service/my-service
+collected 0 items / 1 error
+
+=============================== ERRORS ========================================
+_ ERROR collecting tests/test_api.py _
+ImportError while importing test module '/home/runner/work/my-service/my-service/tests/test_api.py'.
+Traceback (most recent call last):
+  File "/home/runner/work/my-service/my-service/tests/test_api.py", line 4, in <module>
+    from app.cache import get_redis_client
+  File "/home/runner/work/my-service/my-service/app/cache.py", line 2, in <module>
+    import redis
+ModuleNotFoundError: No module named 'redis'
+
+HINT: make sure your test module/package name is not shadowing a standard library module
+=========================== short test summary info ============================
+ERROR tests/test_api.py - ModuleNotFoundError: No module named 'redis'
+!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!
+##[error]Process completed with exit code 2.

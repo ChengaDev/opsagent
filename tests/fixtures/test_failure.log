@@ -1,0 +1,43 @@
+##[group]Run pytest tests/ --cov=app --cov-report=xml
+  pytest tests/ -v --tb=short --cov=app --cov-report=xml
+  shell: /usr/bin/bash -e {0}
+##[endgroup]
+============================= test session starts ==============================
+platform linux -- Python 3.11.4, pytest-7.4.0
+rootdir: /home/runner/work/my-service
+collected 14 items
+
+tests/test_auth.py::test_login_success PASSED                           [  7%]
+tests/test_auth.py::test_login_invalid_password PASSED                  [ 14%]
+tests/test_auth.py::test_login_missing_token FAILED                     [ 21%]
+tests/test_billing.py::test_charge_customer PASSED                      [ 28%]
+tests/test_billing.py::test_refund FAILED                               [ 35%]
+tests/test_billing.py::test_invoice_generation PASSED                   [ 42%]
+tests/test_users.py::test_create_user PASSED                            [ 50%]
+tests/test_users.py::test_delete_user PASSED                            [ 57%]
+tests/test_users.py::test_get_user_not_found PASSED                     [ 64%]
+tests/test_users.py::test_update_user_email PASSED                      [ 71%]
+tests/test_notifications.py::test_send_email PASSED                     [ 78%]
+tests/test_notifications.py::test_send_slack PASSED                     [ 85%]
+tests/test_notifications.py::test_webhook_retry PASSED                  [ 92%]
+tests/test_health.py::test_health_check PASSED                          [100%]
+
+=================================== FAILURES ===================================
+_____________ test_login_missing_token _____________
+
+tests/test_auth.py:45: in test_login_missing_token
+    assert response.status_code == 401
+AssertionError: assert 500 == 401
+E   where 500 = <Response [500]>.status_code
+
+_____________ test_refund _____________
+
+tests/test_billing.py:88: in test_refund
+    assert result["status"] == "refunded"
+AssertionError: assert "failed" == "refunded"
+
+=========================== short test summary info ============================
+FAILED tests/test_auth.py::test_login_missing_token - AssertionError: assert 500 == 401
+FAILED tests/test_billing.py::test_refund - AssertionError: assert "failed" == "refunded"
+========================= 2 failed, 12 passed in 4.23s =========================
+##[error]Process completed with exit code 1.

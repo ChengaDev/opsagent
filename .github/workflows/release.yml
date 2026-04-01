@@ -1,0 +1,143 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write   # needed to create GitHub Releases and upload assets
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            asset_name: opsagent-linux-x86_64
+          - os: macos-13          # Intel
+            asset_name: opsagent-macos-x86_64
+          - os: macos-14          # Apple Silicon
+            asset_name: opsagent-macos-arm64
+          - os: windows-latest
+            asset_name: opsagent-windows-x86_64.exe
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -e ".[all-providers,build]"
+
+      - name: Build executable
+        run: pyinstaller opsagent.spec
+
+      - name: Rename executable (Unix)
+        if: runner.os != 'Windows'
+        run: mv dist/opsagent dist/${{ matrix.asset_name }}
+
+      - name: Rename executable (Windows)
+        if: runner.os == 'Windows'
+        run: mv dist/opsagent.exe dist/${{ matrix.asset_name }}
+
+      - name: Smoke test — help (Unix)
+        if: runner.os != 'Windows'
+        run: dist/${{ matrix.asset_name }} --help
+
+      - name: Smoke test — help (Windows)
+        if: runner.os == 'Windows'
+        run: dist/${{ matrix.asset_name }} --help
+
+      - name: Smoke test — MCP server startup (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          for server in workspace git notification; do
+            echo '{}' | timeout 5 dist/${{ matrix.asset_name }} --serve $server || true
+            echo "MCP server $server: OK"
+          done
+
+      - name: Smoke test — MCP server startup (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          foreach ($server in @("workspace", "git", "notification")) {
+            $job = Start-Job { param($bin, $srv) echo '{}' | & $bin --serve $srv } -ArgumentList "dist\${{ matrix.asset_name }}", $server
+            Start-Sleep 3
+            Stop-Job $job
+            Write-Host "MCP server $server`: OK"
+          }
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset_name }}
+          path: dist/${{ matrix.asset_name }}
+
+  release:
+    name: Publish GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: OpsAgent-MCP ${{ github.ref_name }}
+          body: |
+            ## OpsAgent-MCP ${{ github.ref_name }}
+
+            AI-powered CI/CD failure first responder — single executable, no Python required.
+
+            ### Download
+
+            | Platform | File |
+            |---|---|
+            | Linux x86_64 | `opsagent-linux-x86_64` |
+            | macOS Intel | `opsagent-macos-x86_64` |
+            | macOS Apple Silicon | `opsagent-macos-arm64` |
+            | Windows x86_64 | `opsagent-windows-x86_64.exe` |
+
+            ### Quick start
+
+            ```bash
+            # Linux / macOS
+            curl -L https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/opsagent-linux-x86_64 \
+              -o opsagent && chmod +x opsagent
+
+            ./opsagent --log-path build.log --workspace .
+            ```
+
+            ### GitHub Actions
+
+            ```yaml
+            - name: Run OpsAgent RCA
+              if: failure()
+              run: |
+                curl -fsSL https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/opsagent-linux-x86_64 \
+                  -o /usr/local/bin/opsagent
+                chmod +x /usr/local/bin/opsagent
+                opsagent --log-path "${{ runner.temp }}/build.log" \
+                         --workspace "${{ github.workspace }}"
+              env:
+                ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+            ```
+          files: |
+            dist/opsagent-linux-x86_64/opsagent-linux-x86_64
+            dist/opsagent-macos-x86_64/opsagent-macos-x86_64
+            dist/opsagent-macos-arm64/opsagent-macos-arm64
+            dist/opsagent-windows-x86_64.exe/opsagent-windows-x86_64.exe
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}

@@ -1,0 +1,18 @@
+##[group]Run helm upgrade --install api-service ./charts/api-service -n production
+  helm upgrade --install api-service ./charts/api-service \
+    --namespace production \
+    --set image.tag=${{ github.sha }} \
+    --wait --timeout 5m
+  shell: /usr/bin/bash -e {0}
+##[endgroup]
+Release "api-service" does not exist. Installing it now.
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "stable" chart repository
+Preparing deployment...
+Waiting for pods to become ready...
+Error: UPGRADE FAILED: timed out waiting for the condition
+helm.go:84: [debug] error occurred: timed out waiting for the condition
+
+Use --debug flag to render out invalid YAML information.
+
+##[error]Process completed with exit code 1.

@@ -1,0 +1,19 @@
+##[group]Run kubectl rollout status deployment/worker -n staging
+  kubectl rollout status deployment/worker -n staging --timeout=120s
+  shell: /usr/bin/bash -e {0}
+##[endgroup]
+Waiting for deployment "worker" rollout to finish: 0 of 2 updated replicas are available...
+error: deployment "worker" exceeded its progress deadline
+##[error]Process completed with exit code 1.
+
+##[group]Run kubectl get events -n staging --sort-by=.lastTimestamp
+  kubectl get events -n staging --sort-by=.lastTimestamp
+  shell: /usr/bin/bash -e {0}
+##[endgroup]
+NAMESPACE   LAST SEEN   TYPE      REASON      OBJECT                        MESSAGE
+staging     45s         Normal    Scheduled   pod/worker-6d8f9b7c5-mn3xp    Successfully assigned staging/worker-6d8f9b7c5-mn3xp to node-2
+staging     44s         Normal    Pulling     pod/worker-6d8f9b7c5-mn3xp    Pulling image "ghcr.io/acme/worker:notexist"
+staging     44s         Warning   Failed      pod/worker-6d8f9b7c5-mn3xp    Failed to pull image "ghcr.io/acme/worker:notexist": rpc error: code = Unknown desc = failed to pull and unpack image: manifest unknown
+staging     44s         Warning   Failed      pod/worker-6d8f9b7c5-mn3xp    Error: ErrImagePull
+staging     30s         Warning   BackOff     pod/worker-6d8f9b7c5-mn3xp    Back-off pulling image "ghcr.io/acme/worker:notexist"
+staging     30s         Warning   Failed      pod/worker-6d8f9b7c5-mn3xp    Error: ImagePullBackOff

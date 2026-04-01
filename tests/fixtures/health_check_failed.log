@@ -1,0 +1,16 @@
+##[group]Run kubectl rollout status deployment/api-service -n production
+  kubectl rollout status deployment/api-service -n production --timeout=300s
+  shell: /usr/bin/bash -e {0}
+##[endgroup]
+Waiting for deployment "api-service" rollout to finish: 0 of 3 updated replicas are available...
+error: deployment "api-service" exceeded its progress deadline
+##[error]Process completed with exit code 1.
+
+##[group]Run kubectl describe pod -l app=api-service -n production
+  kubectl describe pod -l app=api-service -n production
+  shell: /usr/bin/bash -e {0}
+##[endgroup]
+Events:
+  Warning  Unhealthy  90s   kubelet  Readiness probe failed: HTTP probe failed with statuscode: 503
+  Warning  Unhealthy  60s   kubelet  Liveness probe failed: Get "http://10.0.1.5:8080/health": dial tcp 10.0.1.5:8080: connect: connection refused
+  Warning  BackOff    30s   kubelet  Back-off restarting failed container
