@@ -8,6 +8,23 @@
 
 ---
 
+## Is OpsAgent right for you?
+
+OpsAgent works best for **teams** — where CI failures need to be triaged quickly, root causes aren't always obvious, and the investigation result needs to reach multiple people (Slack, webhooks).
+
+**Good fit:**
+- Multiple contributors pushing to the same repo
+- CI failures that block the team and need fast triage
+- Slack or on-call integration to route the RCA to the right person
+- Complex dependency graphs where the root cause isn't immediately visible in the log
+
+**Less useful for:**
+- Solo projects where you read the Actions log directly
+- Simple repos where failures are always obvious
+- Repos with very infrequent CI failures
+
+---
+
 ## How it works
 
 OpsAgent runs as the **last step** of any failing CI workflow (`if: failure()`). Because it executes inside the runner it has direct, local access to everything it needs:
