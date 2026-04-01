@@ -109,7 +109,7 @@ pip install -e .
 
 - name: Run OpsAgent RCA
   if: failure()
-  uses: ChengaDev/opsagent@v1
+  uses: ChengaDev/opsagent@v0.1.0
   with:
     log-path: ${{ runner.temp }}/test.log
     workspace: ${{ github.workspace }}

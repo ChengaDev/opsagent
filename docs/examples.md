@@ -24,7 +24,7 @@ jobs:
 
       - name: Run OpsAgent RCA
         if: failure()
-        uses: ChengaDev/opsagent@v1
+        uses: ChengaDev/opsagent@v0.1.0
         with:
           log-path: ${{ runner.temp }}/pytest.log
           workspace: ${{ github.workspace }}
@@ -58,7 +58,7 @@ jobs:
 
       - name: Run OpsAgent RCA
         if: failure()
-        uses: ChengaDev/opsagent@v1
+        uses: ChengaDev/opsagent@v0.1.0
         with:
           log-path: ${{ runner.temp }}/test.log
           workspace: ${{ github.workspace }}
@@ -72,7 +72,7 @@ jobs:
 ```yaml
       - name: Run OpsAgent RCA
         if: failure()
-        uses: ChengaDev/opsagent@v1
+        uses: ChengaDev/opsagent@v0.1.0
         with:
           log-path: ${{ runner.temp }}/test.log
           workspace: ${{ github.workspace }}
@@ -88,7 +88,7 @@ OpsAgent posts the full RCA as a comment on the pull request that triggered the 
 ```yaml
       - name: Run OpsAgent RCA
         if: failure()
-        uses: ChengaDev/opsagent@v1
+        uses: ChengaDev/opsagent@v0.1.0
         with:
           log-path: ${{ runner.temp }}/test.log
           workspace: ${{ github.workspace }}
@@ -109,7 +109,7 @@ OpsAgent posts the full RCA as a comment on the pull request that triggered the 
 ```yaml
       - name: Run OpsAgent RCA
         if: failure()
-        uses: ChengaDev/opsagent@v1
+        uses: ChengaDev/opsagent@v0.1.0
         with:
           log-path: ${{ runner.temp }}/test.log
           workspace: ${{ github.workspace }}
@@ -125,7 +125,7 @@ OpsAgent posts the full RCA as a comment on the pull request that triggered the 
       # Google Gemini
       - name: Run OpsAgent RCA
         if: failure()
-        uses: ChengaDev/opsagent@v1
+        uses: ChengaDev/opsagent@v0.1.0
         with:
           log-path: ${{ runner.temp }}/test.log
           workspace: ${{ github.workspace }}
@@ -138,7 +138,7 @@ OpsAgent posts the full RCA as a comment on the pull request that triggered the 
       # OpenAI
       - name: Run OpsAgent RCA
         if: failure()
-        uses: ChengaDev/opsagent@v1
+        uses: ChengaDev/opsagent@v0.1.0
         with:
           log-path: ${{ runner.temp }}/test.log
           workspace: ${{ github.workspace }}
@@ -160,7 +160,7 @@ OpsAgent posts the full RCA as a comment on the pull request that triggered the 
 
       - name: Run OpsAgent RCA
         if: failure()
-        uses: ChengaDev/opsagent@v1
+        uses: ChengaDev/opsagent@v0.1.0
         with:
           log-path: ${{ runner.temp }}/deploy.log
           workspace: ${{ github.workspace }}
@@ -180,7 +180,7 @@ OpsAgent posts the full RCA as a comment on the pull request that triggered the 
 
       - name: Run OpsAgent RCA
         if: failure()
-        uses: ChengaDev/opsagent@v1
+        uses: ChengaDev/opsagent@v0.1.0
         with:
           log-path: ${{ runner.temp }}/tf.log
           workspace: ${{ github.workspace }}

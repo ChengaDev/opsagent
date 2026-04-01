@@ -95,9 +95,9 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          name: OpsAgent-MCP ${{ github.ref_name }}
+          name: OpsAgent ${{ github.ref_name }}
           body: |
-            ## OpsAgent-MCP ${{ github.ref_name }}
+            ## OpsAgent ${{ github.ref_name }}
 
             AI-powered CI/CD failure first responder — single executable, no Python required.
 

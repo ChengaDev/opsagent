@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "opsagent-mcp"
+name = "opsagent"
 version = "0.1.0"
 description = "AI-powered CI/CD failure first-responder using LangGraph + MCP"
 requires-python = ">=3.10"
