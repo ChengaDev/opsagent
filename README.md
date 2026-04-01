@@ -196,13 +196,14 @@ pyinstaller opsagent.spec
 
 - name: Run OpsAgent RCA
   if: failure()
-  uses: ChengaDev/opsagent-mcp@v1
+  uses: ChengaDev/opsagent@v1
   with:
     log-path: ${{ runner.temp }}/build.log
     workspace: ${{ github.workspace }}
+    slack-webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+    webhook-url: ${{ secrets.WEBHOOK_URL }}
   env:
     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 ```
 
 ### CD pipeline (Helm deploy)
@@ -218,10 +219,12 @@ pyinstaller opsagent.spec
 
 - name: Run OpsAgent RCA
   if: failure()
-  uses: ChengaDev/opsagent-mcp@v1
+  uses: ChengaDev/opsagent@v1
   with:
     log-path: ${{ runner.temp }}/deploy.log
     workspace: ${{ github.workspace }}
+    slack-webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+    webhook-url: ${{ secrets.WEBHOOK_URL }}
   env:
     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
@@ -236,10 +239,12 @@ pyinstaller opsagent.spec
 
 - name: Run OpsAgent RCA
   if: failure()
-  uses: ChengaDev/opsagent-mcp@v1
+  uses: ChengaDev/opsagent@v1
   with:
     log-path: ${{ runner.temp }}/tf.log
     workspace: ${{ github.workspace }}
+    slack-webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+    webhook-url: ${{ secrets.WEBHOOK_URL }}
   env:
     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
@@ -249,7 +254,7 @@ pyinstaller opsagent.spec
 ```yaml
 - name: Run OpsAgent RCA
   if: failure()
-  uses: ChengaDev/opsagent-mcp@v1
+  uses: ChengaDev/opsagent@v1
   with:
     log-path: ${{ runner.temp }}/build.log
     provider: google
