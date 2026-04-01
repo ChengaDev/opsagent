@@ -18,8 +18,6 @@ jobs:
         include:
           - os: ubuntu-latest
             asset_name: opsagent-linux-x86_64
-          - os: macos-13-large    # Intel
-            asset_name: opsagent-macos-x86_64
           - os: macos-14          # Apple Silicon
             asset_name: opsagent-macos-arm64
           - os: windows-latest
@@ -106,7 +104,6 @@ jobs:
             | Platform | File |
             |---|---|
             | Linux x86_64 | `opsagent-linux-x86_64` |
-            | macOS Intel | `opsagent-macos-x86_64` |
             | macOS Apple Silicon | `opsagent-macos-arm64` |
             | Windows x86_64 | `opsagent-windows-x86_64.exe` |
 
@@ -136,7 +133,6 @@ jobs:
             ```
           files: |
             dist/opsagent-linux-x86_64/opsagent-linux-x86_64
-            dist/opsagent-macos-x86_64/opsagent-macos-x86_64
             dist/opsagent-macos-arm64/opsagent-macos-arm64
             dist/opsagent-windows-x86_64.exe/opsagent-windows-x86_64.exe
           draft: false
