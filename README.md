@@ -190,7 +190,9 @@ pyinstaller opsagent.spec
 
 ```yaml
 - name: Build and test
-  run: npm run build 2>&1 | tee "${{ runner.temp }}/build.log"
+  run: |
+    set -o pipefail
+    npm run build 2>&1 | tee "${{ runner.temp }}/build.log"
 
 - name: Run OpsAgent RCA
   if: failure()
@@ -208,6 +210,7 @@ pyinstaller opsagent.spec
 ```yaml
 - name: Deploy
   run: |
+    set -o pipefail
     helm upgrade --install my-service ./charts/my-service \
       --namespace production \
       --set image.tag=${{ github.sha }} \
@@ -227,7 +230,9 @@ pyinstaller opsagent.spec
 
 ```yaml
 - name: Terraform apply
-  run: terraform apply -auto-approve 2>&1 | tee "${{ runner.temp }}/tf.log"
+  run: |
+    set -o pipefail
+    terraform apply -auto-approve 2>&1 | tee "${{ runner.temp }}/tf.log"
 
 - name: Run OpsAgent RCA
   if: failure()
@@ -252,7 +257,7 @@ pyinstaller opsagent.spec
     GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
 ```
 
-> **Tip:** Always pipe your step output through `tee` so it both prints to the Actions log and saves to a file OpsAgent can read.
+> **Tip:** Always use `set -o pipefail` before piping through `tee` — without it, the pipeline returns `tee`'s exit code (0) even when your command fails, so `if: failure()` never triggers.
 
 ### GitLab CI / Jenkins / other CI systems
 
