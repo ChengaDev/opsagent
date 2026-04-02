@@ -1,6 +1,6 @@
 # OpsAgent
 
-**AI-powered CI failure first responder.** Drops into a failing GitHub Actions workflow, reads build logs and git history directly from the runner, and produces a structured Root Cause Analysis — no external log aggregator, no sidecar, no setup.
+**AI-powered CI failure first responder.** Drops into any failing CI pipeline, reads build logs and git history directly from the runner, and delivers a structured Root Cause Analysis to your team — so you know exactly what broke and why without ever opening the runner logs.
 
 [![CI](https://github.com/ChengaDev/opsagent/actions/workflows/ci.yml/badge.svg)](https://github.com/ChengaDev/opsagent/actions/workflows/ci.yml)
 [![Release](https://github.com/ChengaDev/opsagent/actions/workflows/release.yml/badge.svg)](https://github.com/ChengaDev/opsagent/actions/workflows/release.yml)
