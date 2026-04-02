@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="OpsAgent — AI-powered CI failure first responder. Drops into your failing pipeline and produces a structured Root Cause Analysis automatically.">
+  <title>OpsAgent — AI-powered CI failure first responder</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0d0d0d;
+      color: #e5e7eb;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Animations ──────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+      50%       { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+    }
+
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 20px rgba(239,68,68,0.3); }
+      50%       { text-shadow: 0 0 40px rgba(239,68,68,0.6); }
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .animate-fade-up   { animation: fadeUp 0.6s ease both; }
+    .animate-fade-in   { animation: fadeIn 0.6s ease both; }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.35s; }
+    .delay-4 { animation-delay: 0.5s; }
+    .delay-5 { animation-delay: 0.65s; }
+
+    /* ── Nav ─────────────────────────────────── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      border-bottom: 1px solid #1a1a1a;
+      position: sticky;
+      top: 0;
+      background: rgba(13,13,13,0.92);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      animation: fadeIn 0.4s ease both;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-weight: 700;
+      font-size: 1rem;
+      color: white;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-dot {
+      width: 9px;
+      height: 9px;
+      background: #ef4444;
+      border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.75rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #9ca3af;
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover { color: #fff; }
+
+    /* ── Hero ────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 6.5rem 1.5rem 5rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 999px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.78rem;
+      color: #ef4444;
+      font-weight: 500;
+      margin-bottom: 1.75rem;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-badge .dot {
+      width: 6px;
+      height: 6px;
+      background: #ef4444;
+      border-radius: 50%;
+      animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.35rem;
+    }
+
+    .hero h1 .brand {
+      background: linear-gradient(135deg, #fff 0%, #d1d5db 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero h1 .accent {
+      color: #ef4444;
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    .hero p {
+      color: #9ca3af;
+      font-size: 1.08rem;
+      max-width: 500px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2.25rem;
+    }
+
+    .btn-primary {
+      background: #ef4444;
+      color: #fff;
+      padding: 0.7rem 1.6rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 0 0 0 rgba(239,68,68,0);
+    }
+
+    .btn-primary:hover {
+      background: #dc2626;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(239,68,68,0.35);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #e5e7eb;
+      padding: 0.7rem 1.6rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid #2d2d2d;
+      transition: border-color 0.15s, color 0.15s, transform 0.15s;
+    }
+
+    .btn-secondary:hover {
+      border-color: #555;
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* ── Install snippet ─────────────────────── */
+    .install-snippet {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 9px;
+      padding: 0.65rem 1.1rem;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.83rem;
+      max-width: 100%;
+      transition: border-color 0.2s;
+    }
+
+    .install-snippet:hover { border-color: #333; }
+
+    .install-snippet .ln { color: #3a3a3a; user-select: none; }
+    .install-snippet code { color: #d1d5db; }
+
+    .copy-btn {
+      background: #1e1e1e;
+      border: none;
+      color: #9ca3af;
+      padding: 0.25rem 0.7rem;
+      border-radius: 5px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+
+    .copy-btn:hover { background: #2a2a2a; color: #fff; }
+
+    /* ── Section ─────────────────────────────── */
+    section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 5rem 1.5rem;
+    }
+
+    section h2 {
+      text-align: center;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.02em;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.9rem;
+      margin-bottom: 2.75rem;
+    }
+
+    hr { border: none; border-top: 1px solid #1a1a1a; }
+
+    /* ── Feature cards ───────────────────────── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 640px)  { .cards { grid-template-columns: 1fr; } }
+    @media (min-width: 641px) and (max-width: 860px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+
+    .card {
+      background: #0f0f0f;
+      border: 1px solid #1e1e1e;
+      border-radius: 12px;
+      padding: 1.4rem 1.3rem;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      border-color: #2a2a2a;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+
+    .card-icon {
+      font-size: 1.15rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .card h3 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #f3f4f6;
+      margin-bottom: 0.45rem;
+    }
+
+    .card p {
+      font-size: 0.82rem;
+      color: #6b7280;
+      line-height: 1.65;
+    }
+
+    /* ── Pills ───────────────────────────────── */
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .pill {
+      border: 1px solid #1e1e1e;
+      border-radius: 999px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      transition: border-color 0.15s, color 0.15s, transform 0.15s;
+      cursor: default;
+    }
+
+    .pill:hover {
+      border-color: #3f3f3f;
+      color: #e5e7eb;
+      transform: scale(1.04);
+    }
+
+    /* ── Footer ──────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      color: #4b5563;
+      font-size: 0.8rem;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    footer a { color: #6b7280; text-decoration: none; transition: color 0.15s; }
+    footer a:hover { color: #9ca3af; }
+    footer span { margin: 0 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <span class="nav-dot"></span>
+      OpsAgent
+    </a>
+    <ul class="nav-links">
+      <li><a href="https://github.com/ChengaDev/opsagent">GitHub</a></li>
+      <li><a href="https://github.com/ChengaDev/opsagent/releases">Releases</a></li>
+      <li><a href="https://github.com/ChengaDev/opsagent/blob/main/docs/examples.md">Docs</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge animate-fade-in">
+      <span class="dot"></span>
+      v0.1.0 — now available
+    </div>
+    <h1 class="animate-fade-up delay-1">
+      <span class="brand">OpsAgent</span> fixes your<br>CI failures <span class="accent">automatically</span>
+    </h1>
+    <p class="animate-fade-up delay-2">
+      Drops into your failing pipeline, reads the logs and git history directly from the runner, and produces a structured Root Cause Analysis — no external tools, no setup.
+    </p>
+    <div class="hero-buttons animate-fade-up delay-3">
+      <a href="https://github.com/ChengaDev/opsagent/releases" class="btn-primary">Get Started</a>
+      <a href="https://github.com/ChengaDev/opsagent" class="btn-secondary">View Source</a>
+    </div>
+    <div class="install-snippet animate-fade-up delay-4">
+      <span class="ln">1</span>
+      <code>uses: ChengaDev/opsagent@v0.1.0</code>
+      <button class="copy-btn" onclick="copySnippet(this)">Copy</button>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Why OpsAgent -->
+  <section>
+    <h2>Why OpsAgent?</h2>
+    <p class="section-sub">Everything you need to go from failure to root cause in seconds.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>No Setup Required</h3>
+        <p>Runs as the last step of a failing workflow. No sidecar, no external service — reads logs and git history directly from the runner disk.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧠</div>
+        <h3>AI-Powered RCA</h3>
+        <p>LangGraph orchestrates a structured 4-phase investigation: log triage → code correlation → workspace inspection → RCA synthesis.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔀</div>
+        <h3>Multi-Provider</h3>
+        <p>Works with Anthropic (Claude), OpenAI (o4-mini), and Google (Gemini 2.5). Switch providers with a single line in your workflow.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔔</div>
+        <h3>Instant Notifications</h3>
+        <p>Posts the RCA to Slack, Discord, Teams, PagerDuty, or any webhook. Also comments directly on the failing pull request.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔍</div>
+        <h3>Deterministic Pre-scan</h3>
+        <p>A fast regex-based scanner runs before the LLM — extracts structured issues in milliseconds at zero token cost.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <h3>Any CI Log</h3>
+        <p>pytest, Jest, Docker, Helm, Terraform, Kubernetes — if it produces a log file, OpsAgent can analyse it.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- Supported failures -->
+  <section>
+    <h2>Supported Failure Types</h2>
+    <p class="section-sub">From unit tests to infrastructure — OpsAgent speaks your stack.</p>
+    <div class="pills">
+      <span class="pill">pytest</span>
+      <span class="pill">Jest</span>
+      <span class="pill">TypeScript</span>
+      <span class="pill">Docker</span>
+      <span class="pill">pip</span>
+      <span class="pill">npm</span>
+      <span class="pill">Helm</span>
+      <span class="pill">Terraform</span>
+      <span class="pill">Kubernetes</span>
+      <span class="pill">CloudFormation</span>
+      <span class="pill">GitHub Actions</span>
+      <span class="pill">GitLab CI</span>
+      <span class="pill">Jenkins</span>
+    </div>
+  </section>
+
+  <hr>
+
+  <footer>
+    Built by <a href="https://github.com/ChengaDev">@ChengaDev</a>
+    <span>·</span>
+    <a href="https://github.com/ChengaDev/opsagent">GitHub</a>
+    <span>·</span>
+    MIT License
+  </footer>
+
+  <script>
+    function copySnippet(btn) {
+      navigator.clipboard.writeText('uses: ChengaDev/opsagent@v0.1.0');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    }
+
+    // Animate cards on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.card').forEach(card => observer.observe(card));
+  </script>
+
+</body>
+</html>
